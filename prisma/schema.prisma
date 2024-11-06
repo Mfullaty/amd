@@ -1,0 +1,168 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// Enum for user roles
+enum UserRole {
+  DEVELOPER
+  OWNER
+  ADMIN
+  MANAGER
+  MODERATOR
+  CUSTOMER
+  USER
+}
+
+model User {
+  id             String         @id @default(auto()) @map("_id") @db.ObjectId
+  name           String?
+  email          String?        @unique
+  emailVerified  DateTime?
+  image          String?
+  phone          String?        @unique
+  role           UserRole       @default(CUSTOMER) // Default role is CUSTOMER
+  country        String?
+  hashedPassword String?
+  customerItems  CustomerItem[]
+  accounts       Account[]
+  profile        UserProfile? // Link to user profile
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
+model Account {
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String  @db.ObjectId
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.String
+  access_token      String? @db.String
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.String
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+// Model for normal user profile
+model UserProfile {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String    @unique @db.ObjectId
+  dateOfBirth DateTime?
+  address     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Category {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String   @unique
+  description String?
+  Item        Item[]
+  added_by    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  Sale        Sale[]
+}
+
+model Item {
+  id            String         @id @default(auto()) @map("_id") @db.ObjectId
+  title         String
+  category      Category       @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  categoryId    String         @db.ObjectId
+  imageUrls     String[]
+  quantity      Int
+  unit          Unit           @relation(fields: [unitId], references: [id])
+  unitId        String         @db.ObjectId
+  price         Float
+  added_by      String?
+  notes         String?
+  CustomerItems CustomerItem[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+}
+
+model CustomerItem {
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  price_paid      Float
+  price_remain    Float
+  total           Float?    @default(0)
+  description     String?
+  added_by        String?
+  orderId         String?
+  imageUrls     String[]
+  bringing_date   DateTime  @default(now())
+  collection_date DateTime?
+  // Relationships
+  userId          String    @db.ObjectId
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  itemId          String    @db.ObjectId
+  item            Item      @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model Sale {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  title      String
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  categoryId String   @db.ObjectId
+  imageUrls  String[]
+  quantity   Int
+  unit       Unit     @relation(fields: [unitId], references: [id])
+  unitId     String   @db.ObjectId
+  price      Float
+  notes      String?
+  added_by   String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Unit {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  title        String
+  abbreviation String?
+  added_by     String?
+  Item         Item[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  Sale         Sale[]
+}
+
+//Expenses
+model Expense {
+  id              String        @id @default(auto()) @map("_id") @db.ObjectId
+  title           String        @unique
+  description     String?
+  amount          Float
+  paymentMethod   paymentMethod @relation(fields: [paymentMethodId], references: [id], onDelete: Cascade)
+  paymentMethodId String        @db.ObjectId
+  date            DateTime      @default(now())
+  added_by        String
+  createdAt       DateTime      @default(now())
+}
+
+//Payment Method
+model paymentMethod {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  title       String    @unique
+  description String?
+  Expense     Expense[]
+  createdAt   DateTime  @default(now())
+}
