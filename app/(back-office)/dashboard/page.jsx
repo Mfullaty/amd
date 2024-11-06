@@ -36,15 +36,15 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 export default function DashboardPage() {
-  const {data: session, status} = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
 
-const redirect = (url) => {
-  router.push(url);
-}
-  if (status === "authenticated" && session.user.role === "CUSTOMER") {
-    return redirect("/dashboard/profile");
-  }
+  useEffect(() => {
+    if (status === "authenticated" && session.user.role === "CUSTOMER") {
+      router.push("/dashboard/profile");
+    }
+  }, [status, session, router]);
+
   const [customers, setCustomers] = useState([]);
   const [expenses, setExpenses] = useState([]);
   const [sales, setSales] = useState([]);
