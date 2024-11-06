@@ -1,6 +1,6 @@
 "use client";
 import AppIcon from "@/components/dashboard/AppIcon";
-import DeleteButton from "@/components/dashboard/DeleteButton";
+import DeleteButton from "@/components/dashboard/DeleteBtn";
 import EditBtn from "@/components/dashboard/EditBtn";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";

@@ -7,7 +7,7 @@ import { convertToHumanReadable } from "@/lib/convertToHumanReadable";
 import { getData } from "@/lib/getData";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import DeleteButton from "@/components/dashboard/DeleteButton";
+import DeleteButton from "@/components/dashboard/DeleteBtn";
 
 export default function CategorySinglePage({ params: { id } }) {
   const [category, setCategory] = useState([]);

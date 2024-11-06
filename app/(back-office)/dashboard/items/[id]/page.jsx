@@ -2,7 +2,7 @@
 import FlutterwavePayment from "@/components/FlutterwavePayment";
 import ImageSlider from "@/components/ImageSlider";
 import AppIcon from "@/components/dashboard/AppIcon";
-import DeleteButton from "@/components/dashboard/DeleteButton";
+import DeleteButton from "@/components/dashboard/DeleteBtn";
 import EditBtn from "@/components/dashboard/EditBtn";
 import { Meteors } from "@/components/ui/Meteors";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

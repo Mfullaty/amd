@@ -1,7 +1,7 @@
 "use client";
 import Login from "@/app/login/page";
 import AppIcon from "@/components/dashboard/AppIcon";
-import DeleteButton from "@/components/dashboard/DeleteButton";
+import DeleteButton from "@/components/dashboard/DeleteBtn";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

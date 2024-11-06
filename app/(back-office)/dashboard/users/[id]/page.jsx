@@ -23,7 +23,7 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { Roles } from "@/lib/Roles";
-import DeleteButton from "@/components/dashboard/DeleteButton";
+import DeleteButton from "@/components/dashboard/DeleteBtn";
 
 export default function UserDetailsPage({ params }) {
   const [user, setUser] = useState(null);

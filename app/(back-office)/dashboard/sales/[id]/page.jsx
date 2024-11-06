@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import AppIcon from "@/components/dashboard/AppIcon";
 import { convertToHumanReadable } from "@/lib/convertToHumanReadable";
 import ImageSlider from "@/components/ImageSlider";
-import DeleteButton from "@/components/dashboard/DeleteButton";
+import DeleteButton from "@/components/dashboard/DeleteBtn";
 
 export default function SaleDetailsPage({ params }) {
   const [sale, setSale] = useState(null);
