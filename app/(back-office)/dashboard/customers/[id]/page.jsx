@@ -106,30 +106,9 @@ export default function CustomerDetailsPage({ params }) {
 
   return (
     <div className="relative w-full my-6">
-      <div className="relative w-ull flex justify-between items-center flex-wrap gap-2">
-        {!["CUSTOMER"].includes(user.role) && (
-          <div className="absolute top-2 right-2 flex items-center gap-2">
-            <EditBtn link={`/dashboard/customers/update/${customer?.id}`} />
-            <DeleteBtn
-              className="text-sm"
-              resourceTitle="customers"
-              id={customer?.id}
-              deleteText={
-                <div className="flex items-center justify-center py-2 px-3 rounded-md bg-yellow-600 dark:bg-yellow-500 hover:bg-red-500 dark:hover:bg-red-600 outline-0 transition-colors ease-in-out text-background cursor-pointer">
-                  <AppIcon icon="Trash2" className="w-3 h-3" />
-                  Delete
-                </div>
-              }
-              deleteConfirmationText={`This action cannot be undone. This will delete ${customer.user?.name}'s item`}
-              skeletonWitdth="16"
-              skeletonHeight="9"
-              afterDelete={() => router.back()}
-            />
-          </div>
-        )}
-
-        {isToday || isTomorrow ? (
-          <>
+      <div className="relative w-full flex justify-between items-center flex-wrap gap-2">
+        {(isToday || isTomorrow) && (
+          <div className="flex flex-row items-center gap-2 flex-wrap">
             {isToday && ["CUSTOMER"].includes(user.role) ? (
               <div className="flicker-effect hover:bg-muted-foreground cursor-pointer p-2 bg-foreground text-background border border-red-500 rounded-md flex flex-row items-center gap-2 flex-wrap">
                 <p className="text-sm font-bold">Your Work is due today!</p>
@@ -148,13 +127,13 @@ export default function CustomerDetailsPage({ params }) {
                 <p className="text-sm">Is due today!</p>
               </div>
             ) : isTomorrow && ["CUSTOMER"].includes(user.role) ? (
-              <div className="glitch-effect hover:bg-muted cursor-pointer p-2  border border-yellow-500 rounded-md flex flex-row items-center gap-2 flex-wrap">
+              <div className="glitch-effect hover:bg-muted cursor-pointer p-2 border border-yellow-500 rounded-md flex flex-row items-center gap-2 flex-wrap">
                 <p className="text-sm font-bold">Your work is due Tomorrow!</p>
               </div>
             ) : (
               isTomorrow &&
               !["CUSTOMER"].includes(user.role) && (
-                <div className="glitch-effect hover:bg-muted cursor-pointer p-2  border border-yellow-500 rounded-md flex flex-row items-center gap-2 flex-wrap">
+                <div className="glitch-effect hover:bg-muted cursor-pointer p-2 border border-yellow-500 rounded-md flex flex-row items-center gap-2 flex-wrap">
                   <div className="flex flex-row items-center flex-wrap gap-2">
                     <Avatar className="w-8 h-8">
                       <AvatarImage src={customer.user.image} />
@@ -168,9 +147,27 @@ export default function CustomerDetailsPage({ params }) {
                 </div>
               )
             )}
-          </>
-        ) : (
-          <></>
+          </div>
+        )}
+        {!["CUSTOMER"].includes(user.role) && (
+          <div className=" flex items-center gap-2">
+            <EditBtn link={`/dashboard/customers/update/${customer?.id}`} />
+            <DeleteBtn
+              className="text-sm"
+              resourceTitle="customers"
+              id={customer?.id}
+              deleteText={
+                <div className="flex items-center justify-center py-2 px-3 rounded-md bg-yellow-600 dark:bg-yellow-500 hover:bg-red-500 dark:hover:bg-red-600 outline-0 transition-colors ease-in-out text-background cursor-pointer">
+                  <AppIcon icon="Trash2" className="w-3 h-3" />
+                  Delete
+                </div>
+              }
+              deleteConfirmationText={`This action cannot be undone. This will delete ${customer.user?.name}'s item`}
+              skeletonWitdth="16"
+              skeletonHeight="9"
+              afterDelete={() => router.back()}
+            />
+          </div>
         )}
       </div>
 
