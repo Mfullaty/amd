@@ -4,14 +4,12 @@ import ImageSlider from "@/components/ImageSlider";
 import AppIcon from "@/components/dashboard/AppIcon";
 import DeleteButton from "@/components/dashboard/DeleteBtn";
 import EditBtn from "@/components/dashboard/EditBtn";
-import { Meteors } from "@/components/ui/Meteors";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { convertToHumanReadable } from "@/lib/convertToHumanReadable";
 import { formatMoney } from "@/lib/formatMoney";
 import { getData } from "@/lib/getData";
 import { useSession } from "next-auth/react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 

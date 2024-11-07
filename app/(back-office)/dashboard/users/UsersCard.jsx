@@ -1,4 +1,9 @@
 "use client";
+
+import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import { toast } from "sonner";
+import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,26 +26,27 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import AppIcon from "@/components/dashboard/AppIcon";
+import InfoModal from "@/components/dashboard/InfoModal";
 import { generateInitials } from "@/lib/generateInitials";
 import { getData } from "@/lib/getData";
-import { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
 import { truncateText } from "@/lib/truncateText";
-import { Skeleton } from "@/components/ui/skeleton";
-import { toast } from "sonner";
-import { CircleHelp } from "lucide-react";
-import InfoModal from "@/components/dashboard/InfoModal";
-import Link from "next/link";
 import { Roles } from "@/lib/Roles";
-import { Badge } from "@/components/ui/badge";
+import { CircleHelp } from "lucide-react";
 
 const roles = Roles;
+const ITEMS_PER_PAGE = 10;
 
 export default function UsersCard() {
   const [users, setUsers] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [updatingUserId, setUpdatingUserId] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
   const { data: session } = useSession();
 
   useEffect(() => {
@@ -48,7 +54,8 @@ export default function UsersCard() {
       setIsLoading(true);
       try {
         const users = await getData("users");
-        setUsers(users || []); // Ensure users is always an array
+        setUsers(users || []);
+        setFilteredUsers(users || []);
       } catch (error) {
         console.error("Error fetching users:", error);
         toast.error("Failed to fetch users.");
@@ -59,6 +66,16 @@ export default function UsersCard() {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const filtered = users.filter(
+      (user) =>
+        user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setFilteredUsers(filtered);
+    setCurrentPage(1);
+  }, [searchQuery, users]);
 
   const sessionUser = session?.user;
 
@@ -94,7 +111,10 @@ export default function UsersCard() {
       return;
     }
 
-    if (sessionRole === "ADMIN" && ["OWNER", "DEVELOPER"].includes(userToUpdateRole)) {
+    if (
+      sessionRole === "ADMIN" &&
+      ["OWNER", "DEVELOPER"].includes(userToUpdateRole)
+    ) {
       toast.warning(`Admins cannot change roles of ${userToUpdateRole}s!`);
       return;
     }
@@ -133,6 +153,35 @@ export default function UsersCard() {
       setUpdatingUserId(null);
     }
   };
+  const paginatedUsers = filteredUsers.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
+
+  const totalPages = Math.ceil(filteredUsers.length / ITEMS_PER_PAGE);
+
+  const paginationButtons = () => {
+    return (
+      <div className="flex gap-2">
+        <Button
+          size="sm"
+          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+          disabled={currentPage === 1}
+        >
+          <AppIcon icon="ChevronLeft" className="w-4 h-4" />
+        </Button>
+        <Button
+          size="sm"
+          onClick={() =>
+            setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+          }
+          disabled={currentPage === totalPages}
+        >
+          <AppIcon icon="ChevronRight" className="w-4 h-4" />
+        </Button>
+      </div>
+    );
+  };
 
   return (
     <Card>
@@ -155,6 +204,15 @@ export default function UsersCard() {
         </CardDescription>
       </CardHeader>
       <CardContent className="grid gap-6">
+        <div className="flex justify-between items-center">
+          <Input
+            placeholder="Search users..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="max-w-sm"
+          />
+          {paginationButtons()}
+        </div>
         {isLoading ? (
           <>
             {[...Array(4)].map((_, index) => (
@@ -174,12 +232,15 @@ export default function UsersCard() {
             ))}
           </>
         ) : (
-          users.map((user) => (
+          paginatedUsers.map((user) => (
             <div
               key={user.id}
               className="flex items-center justify-between flex-wrap gap-4 space-x-4"
             >
-              <Link href={`/dashboard/users/${user.id}`} className="hover:shadow-xl dark:hover:shadow-slate-600  rounded-md">
+              <Link
+                href={`/dashboard/users/${user.id}`}
+                className="hover:shadow-xl dark:hover:shadow-slate-600  rounded-md"
+              >
                 <div className="flex items-center space-x-0 md:space-x-4">
                   <div className="hidden md:block">
                     <Avatar>
@@ -199,13 +260,11 @@ export default function UsersCard() {
                         <p className="text-sm font-medium leading-none block md:hidden text-indigo-600 dark:text-orange-600 hover:text-orange-600 dark:hover:text-indigo-500 transition-colors ease-in-out">
                           {truncateText(user.name, 20)}
                         </p>
-
                         <p className="text-sm font-medium leading-none hidden md:block text-indigo-600 dark:text-orange-600 hover:text-orange-600 dark:hover:text-indigo-500 transition-colors ease-in-out">
                           {user.name}
                         </p>
                       </>
                     )}
-
                     <p className="hidden md:block text-sm text-muted-foreground">
                       {user.email}
                     </p>
@@ -272,6 +331,12 @@ export default function UsersCard() {
             </div>
           ))
         )}
+        <div className="flex justify-between items-center mt-4">
+          <p className="text-sm text-muted-foreground">
+            Page {currentPage} of {totalPages}
+          </p>
+          {paginationButtons()}
+        </div>
       </CardContent>
     </Card>
   );
