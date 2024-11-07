@@ -1,5 +1,4 @@
 "use client";
-import Login from "@/app/login/page";
 import AppIcon from "@/components/dashboard/AppIcon";
 import DeleteButton from "@/components/dashboard/DeleteBtn";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -89,10 +88,6 @@ export default function UserProfile() {
           </div>
 
           <div className="flex flex-col justify-center items-center gap-2">
-            {/* <AppIcon
-              icon="Pencil"
-              className="w-5 h-5 text-background bg-orange-600 hover:bg-orange-700 dark:bg-indigo-400 dark:hover:bg-indigo-500  transition-colors ease-out  cursor-pointer p-1 rounded-full"
-            ></AppIcon> */}
             <DeleteButton
               className="text-background bg-red-600 hover:bg-red-700 dark:bg-red-400 dark:hover:bg-red-500  transition-colors ease-out  cursor-pointer p-1 rounded-full"
               resourceTitle="users"
