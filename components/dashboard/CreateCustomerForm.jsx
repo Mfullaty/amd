@@ -1,23 +1,24 @@
-"use client";
-import SelectInput from "@/components/FormInputs/SelectInput";
-import SubmitButton from "@/components/FormInputs/SubmitButton";
-import TextareaInput from "@/components/FormInputs/TextAreaInput";
-import TextInput from "@/components/FormInputs/TextInput";
-import { makePostRequest, makePutRequest } from "@/lib/apiRequest";
-import { useSession } from "next-auth/react";
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import "react-datepicker/dist/react-datepicker.css";
-import DateTimeInput from "../FormInputs/DateTimeInput";
-import { Skeleton } from "../ui/skeleton";
-import ImageInput from "@/components/dashboard/ImageInput";
+'use client'
+
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { useSession } from 'next-auth/react'
+import { makePostRequest, makePutRequest } from '@/lib/apiRequest'
+import CustomerSelectionModal from '@/components/CustomerSelectionModal'
+import SelectInput from '@/components/FormInputs/SelectInput'
+import SubmitButton from '@/components/FormInputs/SubmitButton'
+import TextareaInput from '@/components/FormInputs/TextAreaInput'
+import TextInput from '@/components/FormInputs/TextInput'
+import DateTimeInput from '@/components/FormInputs/DateTimeInput'
+import ImageInput from '@/components/dashboard/ImageInput'
+import { Skeleton } from '@/components/ui/skeleton'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from '@/components/ui/card'
 
 export default function CreateCustomerForm({
   items,
@@ -28,43 +29,54 @@ export default function CreateCustomerForm({
 }) {
   const [imageUrls, setImageUrls] = useState(
     initialValues && initialValues.imageUrls ? initialValues.imageUrls : []
-  );
+  )
+  const [selectedCustomer, setSelectedCustomer] = useState(null)
 
   const handleUpload = (result) => {
-    let uploadedUrls = [];
+    let uploadedUrls = []
     if (Array.isArray(result.info)) {
-      uploadedUrls = result.info.map((info) => info.secure_url);
+      uploadedUrls = result.info.map((info) => info.secure_url)
     } else {
-      uploadedUrls = [result.info.secure_url];
+      uploadedUrls = [result.info.secure_url]
     }
-    setImageUrls((prevImageUrls) => [...prevImageUrls, ...uploadedUrls]);
-  };
+    setImageUrls((prevImageUrls) => [...prevImageUrls, ...uploadedUrls])
+  }
 
-  const { data: session } = useSession();
-  const userName = session?.user?.name;
+  const { data: session } = useSession()
+  const userName = session?.user?.name
+
   const {
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
-  } = useForm({ defaultValues: initialValues });
-  const [loading, setLoading] = useState(false);
+  } = useForm({ defaultValues: initialValues })
+
+  const [loading, setLoading] = useState(false)
 
   async function onSubmit(data) {
-    data.imageUrls = imageUrls;
+    data.imageUrls = imageUrls
+    data.userId = selectedCustomer ? selectedCustomer.id : data.userId
 
     if (isUpdate) {
       makePutRequest(
         setLoading,
         `customers/${initialValues.id}`,
         data,
-        "Customer",
+        'Customer',
         reset
-      );
+      )
     } else {
-      makePostRequest(setLoading, "customers", data, "Customer", reset);
-      setImageUrls([]);
+      makePostRequest(setLoading, 'customers', data, 'Customer', reset)
+      setImageUrls([])
+      setSelectedCustomer(null)
     }
+  }
+
+  const handleCustomerSelect = (customer) => {
+    setSelectedCustomer(customer)
+    setValue('userId', customer.id)
   }
 
   return (
@@ -76,24 +88,28 @@ export default function CreateCustomerForm({
               {fetching ? (
                 <Skeleton className="w-full block my-2 md:w-14 h-8 bg-muted-foreground" />
               ) : (
-                <SelectInput
-                  className="w-full border-2 border-muted bg-background placeholder:text-muted-foreground py-2 px-3 rounded-md"
-                  label={"Select Customer"}
-                  name={"userId"}
-                  register={register}
-                  options={customers}
-                />
+                <div>
+                  <CustomerSelectionModal
+                    customers={customers}
+                    onSelect={handleCustomerSelect}
+                  />
+                  {selectedCustomer && (
+                    <p className="mt-2">
+                      Selected: {selectedCustomer.name} ({selectedCustomer.phone})
+                    </p>
+                  )}
+                </div>
               )}
             </>
           )}
 
           {fetching ? (
-            <Skeleton className="w-full  my-2 md:w-14 h-8 bg-muted-foreground" />
+            <Skeleton className="w-full my-2 md:w-14 h-8 bg-muted-foreground" />
           ) : (
             <SelectInput
               className="w-full border-2 border-muted bg-background placeholder:text-muted-foreground py-2 px-3 rounded-md"
-              label={"Select Item"}
-              name={"itemId"}
+              label="Select Item"
+              name="itemId"
               register={register}
               options={items}
             />
@@ -101,8 +117,8 @@ export default function CreateCustomerForm({
 
           <TextInput
             className="w-full"
-            label={"Price Paid"}
-            name={"price_paid"}
+            label="Price Paid"
+            name="price_paid"
             register={register}
             errors={errors}
             type="number"
@@ -110,8 +126,8 @@ export default function CreateCustomerForm({
 
           <TextInput
             className="w-full"
-            label={"Price remain"}
-            name={"price_remain"}
+            label="Price remain"
+            name="price_remain"
             register={register}
             errors={errors}
             type="number"
@@ -132,8 +148,8 @@ export default function CreateCustomerForm({
           />
 
           <TextareaInput
-            label={"Item Description"}
-            name={"description"}
+            label="Item Description"
+            name="description"
             register={register}
             isRequired={false}
             errors={errors}
@@ -142,7 +158,7 @@ export default function CreateCustomerForm({
           <input
             type="hidden"
             name="added_by"
-            {...register("added_by")}
+            {...register('added_by')}
             value={userName}
           />
         </div>
@@ -155,7 +171,7 @@ export default function CreateCustomerForm({
           <CardContent className="w-full">
             <ImageInput
               className="w-full"
-              label={"Upload Images (Optional)"}
+              label="Upload Images (Optional)"
               imageUrls={imageUrls}
               setImageUrls={setImageUrls}
               handleUpload={handleUpload}
@@ -167,9 +183,9 @@ export default function CreateCustomerForm({
 
         <SubmitButton
           isLoading={loading}
-          title={isUpdate ? "Update Customer" : "New Customer"}
+          title={isUpdate ? 'Update Customer' : 'New Customer'}
         />
       </form>
     </div>
-  );
+  )
 }
