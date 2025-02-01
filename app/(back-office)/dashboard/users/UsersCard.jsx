@@ -96,7 +96,7 @@ export default function UsersCard() {
 
     const userToUpdateRole = userToUpdate.role;
 
-    if (!["DEVELOPER", "OWNER", "ADMIN"].includes(sessionRole)) {
+    if (!["DEVELOPER", "OWNER"].includes(sessionRole)) {
       toast.warning("You are not allowed to change roles!");
       return;
     }
@@ -113,7 +113,7 @@ export default function UsersCard() {
 
     if (
       sessionRole === "ADMIN" &&
-      ["OWNER", "DEVELOPER"].includes(userToUpdateRole)
+      ["OWNER", "DEVELOPER", "ADMIN"].includes(userToUpdateRole)
     ) {
       toast.warning(`Admins cannot change roles of ${userToUpdateRole}s!`);
       return;

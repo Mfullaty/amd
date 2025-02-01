@@ -3,7 +3,6 @@ import AppCard from "@/components/dashboard/AppCard";
 import AppIcon from "@/components/dashboard/AppIcon";
 import { DateRangePicker } from "@/components/dashboard/data-table/DateRangePicker";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -199,41 +198,43 @@ export default function DashboardPage() {
       </div>
       <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4 my-8">
         {["DEVELOPER", "OWNER"].includes(session.user.role) && (
-          <AppCard
-            cardTitle="Customers Revenue"
-            cardContent={
-              loading ? (
-                <Skeleton className="w-full h-8 bg-muted" />
-              ) : (
-                `₦${customersRevenue}`
-              )
-            }
-            cardIcon="BadgeDollarSign"
-            cardSubtitle={
-              formatedDates.from && formatedDates.to
-                ? `${formatedDates.from} - ${formatedDates.to}`
-                : ""
-            }
-            cardLink="/dashboard/customers"
-          />
+          <>
+            <AppCard
+              cardTitle="Customers Revenue"
+              cardContent={
+                loading ? (
+                  <Skeleton className="w-full h-8 bg-muted" />
+                ) : (
+                  `₦${customersRevenue}`
+                )
+              }
+              cardIcon="BadgeDollarSign"
+              cardSubtitle={
+                formatedDates.from && formatedDates.to
+                  ? `${formatedDates.from} - ${formatedDates.to}`
+                  : ""
+              }
+              cardLink="/dashboard/customers"
+            />
+            <AppCard
+              cardTitle="Sales Revenue"
+              cardContent={
+                loading ? (
+                  <Skeleton className="w-full h-8 bg-muted" />
+                ) : (
+                  `₦${salesRevenue}`
+                )
+              }
+              cardIcon="ShoppingCart"
+              cardSubtitle={
+                formatedDates.from && formatedDates.to
+                  ? `${formatedDates.from} - ${formatedDates.to}`
+                  : ""
+              }
+              cardLink="/dashboard/sales"
+            />
+          </>
         )}
-        <AppCard
-          cardTitle="Sales Revenue"
-          cardContent={
-            loading ? (
-              <Skeleton className="w-full h-8 bg-muted" />
-            ) : (
-              `₦${salesRevenue}`
-            )
-          }
-          cardIcon="ShoppingCart"
-          cardSubtitle={
-            formatedDates.from && formatedDates.to
-              ? `${formatedDates.from} - ${formatedDates.to}`
-              : ""
-          }
-          cardLink="/dashboard/sales"
-        />
         <AppCard
           cardTitle="Total Items"
           cardContent={

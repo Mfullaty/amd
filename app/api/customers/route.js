@@ -45,6 +45,11 @@ const columns = [
     header: "Total",
     meta: { displayName: "Total", navigationUrl: "/dashboard/customers/[id]" },
   },
+  {
+    accessorKey: "added_by",
+    header: "Added by",
+    meta: { displayName: "Added By", navigationUrl: "/dashboard/customers/[id]" },
+  },
 ];
 
 export async function GET(request) {

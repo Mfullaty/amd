@@ -9,7 +9,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
+import {  ChevronDown } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -34,7 +34,6 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import AppIcon from "../AppIcon";
 import { toast } from "sonner";
-import Spinner from "../Spinner";
 import { DateRangePicker } from "./DateRangePicker";
 
 export default function DataTable({ apiUrl }) {

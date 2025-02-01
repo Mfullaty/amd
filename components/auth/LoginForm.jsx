@@ -5,8 +5,6 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import Link from "next/link";
-import { FaGoogle } from "react-icons/fa";
-import { FaGithub } from "react-icons/fa";
 import { useEffect } from "react";
 import { getData } from "@/lib/getData";
 
@@ -18,7 +16,6 @@ export default function LoginForm() {
   const sessionUser = session?.user;
 
   useEffect(() => {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
     const token = searchParams.get("token");
     const id = searchParams.get("id");
     if (token && id) {
