@@ -50,7 +50,6 @@ export default function DashboardPage() {
   const [sales, setSales] = useState([]);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
-  
 
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
@@ -63,8 +62,6 @@ export default function DashboardPage() {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = customers.slice(indexOfFirstItem, indexOfLastItem);
-
-
 
   // Function to handle page change
   const handlePageChange = (newPage) => {
@@ -135,7 +132,7 @@ export default function DashboardPage() {
   const formatedDates = formatedDateRange(dateRange);
 
   // Totals:
-  const customersRevenue = calculateDbTotals(customers, "total");
+  const customersRevenue = calculateDbTotals(customers, "total", "formatMoney");
   const salesRevenue = calculateDbTotals(sales, "price");
   const totalExpenses = calculateDbTotals(expenses, "amount");
   const totalItems = convertNumber(items.length);
@@ -200,25 +197,26 @@ export default function DashboardPage() {
           );
         })}
       </div>
-
       <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4 my-8">
-        <AppCard
-          cardTitle="Customers Revenue"
-          cardContent={
-            loading ? (
-              <Skeleton className="w-full h-8 bg-muted" />
-            ) : (
-              `₦${customersRevenue}`
-            )
-          }
-          cardIcon="BadgeDollarSign"
-          cardSubtitle={
-            formatedDates.from && formatedDates.to
-              ? `${formatedDates.from} - ${formatedDates.to}`
-              : ""
-          }
-          cardLink="/dashboard/customers"
-        />
+        {["DEVELOPER", "OWNER"].includes(session.user.role) && (
+          <AppCard
+            cardTitle="Customers Revenue"
+            cardContent={
+              loading ? (
+                <Skeleton className="w-full h-8 bg-muted" />
+              ) : (
+                `₦${customersRevenue}`
+              )
+            }
+            cardIcon="BadgeDollarSign"
+            cardSubtitle={
+              formatedDates.from && formatedDates.to
+                ? `${formatedDates.from} - ${formatedDates.to}`
+                : ""
+            }
+            cardLink="/dashboard/customers"
+          />
+        )}
         <AppCard
           cardTitle="Sales Revenue"
           cardContent={

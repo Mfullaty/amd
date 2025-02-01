@@ -1,15 +1,15 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
+} from "@/components/ui/dialog";
 import {
   Table,
   TableBody,
@@ -17,27 +17,40 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { Search } from 'lucide-react'
+} from "@/components/ui/table";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Search } from "lucide-react";
 
 export default function CustomerSelectionModal({ customers, onSelect }) {
-  const [isOpen, setIsOpen] = useState(false)
-  const [searchTerm, setSearchTerm] = useState('')
-  const [filteredCustomers, setFilteredCustomers] = useState(customers)
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredCustomers, setFilteredCustomers] = useState(customers);
 
   useEffect(() => {
+    const normalizedSearchTerm = searchTerm.replace(/\s+/g, ""); // Remove spaces
+
+    const fuzzyMatch = (phone, term) => {
+      let i = 0;
+      for (let char of phone.replace(/\s+/g, "")) {
+        if (char === term[i]) i++;
+        if (i === term.length) return true;
+      }
+      return false;
+    };
+
     setFilteredCustomers(
-      customers.filter((customer) =>
-        customer.name.toLowerCase().includes(searchTerm.toLowerCase())
+      customers.filter(
+        (customer) =>
+          customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          fuzzyMatch(customer.phone, normalizedSearchTerm)
       )
-    )
-  }, [searchTerm, customers])
+    );
+  }, [searchTerm, customers]);
 
   const handleSelect = (customer) => {
-    onSelect(customer)
-    setIsOpen(false)
-  }
+    onSelect(customer);
+    setIsOpen(false);
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -82,5 +95,5 @@ export default function CustomerSelectionModal({ customers, onSelect }) {
         </ScrollArea>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
