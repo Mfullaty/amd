@@ -66,7 +66,7 @@ export async function PUT(request) {
       "Click on the following link in order to reset your password. Thank you";
     const subject = "Password Reset - Arewa Fashion Designs";
     const sendMail = await resend.emails.send({
-      from: "Arewa Fashion Designs <contact@arewafashiondesigns.com>",
+      from: "Arewa Fashion Designs <contact@fashionarewa.com>",
       to: email,
       subject: subject,
       react: EmailTemplate({

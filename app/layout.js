@@ -12,8 +12,8 @@ import 'slick-carousel/slick/slick-theme.css';
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "AMD Inventory",
-  description: "Amd inventory app",
+  title: "Fashion Arewa",
+  description: "Fashion Arewa App",
 };
 
 export default function RootLayout({ children }) {

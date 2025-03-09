@@ -15,7 +15,7 @@ const FlutterwavePayment = ({
   added_by,
   paymentReason = "Design",
 }) => {
-  const ref = `AMD_${crypto.randomUUID() + Date.now()}`;
+  const ref = `FSN_${crypto.randomUUID() + Date.now()}`;
 
   const config = {
     public_key: process.env.NEXT_PUBLIC_FLUTTERWAVE_PUBLIC_KEY,
@@ -29,7 +29,7 @@ const FlutterwavePayment = ({
       name,
     },
     customizations: {
-      title: "AMD Inventory",
+      title: "AREWA FASHION",
       description: `Payment For ${paymentReason}`,
       logo: "logo.png",
     },
